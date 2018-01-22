@@ -1,8 +1,25 @@
-setwd("~/Desktop/Education/Coursera/DataScience/03GettingCleaningData/TidyDataProject")
+---
+title: "Tidy Data Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load dependencies
+```{r library}
 library(purrr)
 library(dplyr)
+```
 
-# Load data
+## Load training set, test set, and labels
+A description of all the features can be found in UCI HAR Dataset/features_info.txt
+Information regarding how the data was collected can be found in UCI HAR Dataset/README.txt
+
+The resulting dataframes are train_set and test_set. These dataframe contain the data, labels, and subjects, and they also use the feature names as the names for the columns.
+
+```{r load data}
 feature_set <- read.table('UCI HAR Dataset/features.txt')
 activity_labels <- read.table('UCI HAR Dataset/activity_labels.txt')
 
@@ -21,21 +38,27 @@ names(test_subjects) <- "subjectID"
 names(test_X) <- feature_set$V2
 names(test_Y) <- "activityLabel"
 test_set <- cbind(test_X, test_subjects, test_Y)
+```
 
-# Merge train_set and test_set
+## Merge train_set and test_set
+The training set and test set are merged into a single dataframe (data).
+It also removes unnecessary features, so that only feature means and standard deviations remain
+```{r merge}
 data <- rbind(train_set, test_set)
-
-# Extract measurements on the mean and standard deviation for each measurement.
 data <- data[, grepl('std[()-]',feature_set$V2) | grepl('mean[()-]',feature_set$V2)]
-
-# Use descriptive activity names to name the activities in the data set
 for(i in 1:6){
   data[data$activityLabel == i, 'activityLabel'] <- as.character(activity_labels[activity_labels$V1 == i, 'V2'])
 }
+```
 
-# Create an independent tidy data set with the average of each variable for each activity and each subject.
+
+## Create an independent tidy data set with the average of each variable for each activity and each subject.
+Using the dplyr package, a new tidy dataframe (tidy_data) with the means of each feature grouped by activity and participant. This dataframe is saved to tidy_data.txt.
+
+```{r tidy data}
 tidy_data <- data %>%
   group_by(activityLabel, subjectID) %>%
   summarize_all(mean)
-  
+
 write.table(tidy_data, 'tidy_data.txt', row.names = FALSE)
+```

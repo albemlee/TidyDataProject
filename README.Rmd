@@ -1,0 +1,20 @@
+---
+title: "README"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## run_analysis.R
+Contains the code used to produce the tidy dataset
+
+## tidy_data.txt
+Contains the output (tidy data set)
+
+## codebook.rmd
+Contains the explanation for the steps used to produce the tidy dataset
+
+## UCI HAR Dataset
+Contains the dataset used for this analysis. For additional information, go to <http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones>
